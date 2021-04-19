@@ -1,8 +1,8 @@
 'use strict';
 
 const express = require('express');
-const { User, Course } = require('../models');
-const { asyncHandler } = require('../middleware/asynchandler');
+const { User, Course } = require('./models');
+const { asyncHandler } = require('./middleware/asynchandler');
 
 // CONSTRUCT A ROUTER INSTANCE
 const router = express.Router();
