@@ -13,8 +13,35 @@ module.exports = (sequelize, DataTypes) => {
   }
   Course.init(
     {
-      title: DataTypes.STRING,
-      description: DataTypes.TEXT,
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Please enter a course title',
+          },
+          notEmpty: {
+            msg: 'Please enter a course title',
+          },
+        },
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'A course description is required',
+          },
+          notEmpty: {
+            msg: 'A course description is required',
+          },
+        },
+      },
       estimatedTime: DataTypes.STRING,
       materialsNeeded: DataTypes.STRING,
     },
@@ -26,8 +53,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Course.associate = models => {
     Course.belongsTo(models.User, {
+      as: 'student', // alias
       foreignKey: {
         fieldName: 'userId',
+        allowNull: 'false',
       },
     });
   };
