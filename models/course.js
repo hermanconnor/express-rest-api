@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       as: 'student', // alias
       foreignKey: {
         fieldName: 'userId',
-        allowNull: 'false',
+        // allowNull: 'false',
       },
     });
   };
