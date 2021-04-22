@@ -27,16 +27,16 @@ router.get(
 // GET route that will return a users specific course
 router.get(
   '/courses/:id',
-  asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          as: 'student',
-        },
-      ],
-    });
-    res.json(course);
+  asyncHandler(async (req, res, next) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course) {
+      res.json(course);
+    } else {
+      const err = new Error();
+      err.status = 404;
+      err.message = 'Course Not Found';
+      next(err);
+    }
   })
 );
 
@@ -45,8 +45,9 @@ router.post(
   '/courses',
   authenticateUser,
   asyncHandler(async (req, res) => {
+    let course;
     try {
-      const course = await Course.create(req.body);
+      course = await Course.create(req.body);
       res.location(`/courses/${course.id}`);
       res.status(201).end();
     } catch (error) {
@@ -67,14 +68,55 @@ router.post(
 router.put(
   '/courses/:id',
   authenticateUser,
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res, next) => {
+    let course;
+
+    try {
+      // First find the course
+      course = await Course.findByPk(req.params.id);
+      // If the course exists, update
+      if (course) {
+        await course.update(req.body);
+        res.status(204).end();
+      } else {
+        const err = new Error();
+        err.status = 404;
+        err.message = 'Course Not Found';
+        next(err);
+      }
+    } catch (error) {
+      if (
+        error.name === 'SequelizeValidationError' ||
+        error.name === 'SequelizeUniqueConstraintError'
+      ) {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
+    }
+  })
 );
 
 // DELETE route that will delete the corresponding course
 router.delete(
   '/courses/:id',
   authenticateUser,
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res, next) => {
+    // First find the course
+    const course = await Course.findByPk(req.params.id);
+
+    // If the course exists, delete
+    if (course) {
+      await course.destroy();
+      res.status(204).end();
+    } else {
+      const err = new Error();
+      err.status = 404;
+      err.message = 'Course Not Found';
+      next(err);
+    }
+  })
 );
 
 module.exports = router;

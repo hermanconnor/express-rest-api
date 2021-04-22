@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { User, Course } = require('../models');
+const { User } = require('../models');
 const { asyncHandler } = require('../middleware/asynchandler');
 const { authenticateUser } = require('../middleware/auth-user');
 
