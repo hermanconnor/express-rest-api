@@ -29,6 +29,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
+
       res.location('/');
       res.status(201).end();
     } catch (error) {
