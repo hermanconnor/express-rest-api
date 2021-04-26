@@ -85,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
+      timestamps: false,
     }
   );
 
@@ -93,7 +94,6 @@ module.exports = (sequelize, DataTypes) => {
       as: 'student', // alias
       foreignKey: {
         fieldName: 'userId',
-        // allowNull: false,
       },
     });
   };
