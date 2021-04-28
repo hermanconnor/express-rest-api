@@ -28,7 +28,15 @@ router.get(
 router.get(
   '/courses/:id',
   asyncHandler(async (req, res, next) => {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findAll({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: User,
+          as: 'student',
+        },
+      ],
+    });
     if (course) {
       res.json(course);
     } else {
